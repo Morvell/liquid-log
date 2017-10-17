@@ -56,14 +56,14 @@
          <% for(String client:(List<String>)request.getAttribute("clients")) { %>
             <tr>
                 <td class="col-xs-6">
-                    <h4><span><%= client %></span></h2>
+                    <h4><span><%= client %></span></h4>
                 </td>
                 <td class="col-xs-6">
                 	<a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("prevMonthLinks")).get(client) %>'>Previous Month</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("monthlinks")).get(client) %>'>Month</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last2016links")).get(client) %>'>Last 7 days</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last864links")).get(client) %>'>Last 3 days</a>
-                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("links")).get(client) %>'>Yesterday</a>
+                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("monthLinks")).get(client) %>'>Month</a>
+                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last7DaysLinks")).get(client) %>'>Last 7 days</a>
+                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("last3DaysLinks")).get(client) %>'>Last 3 days</a>
+                    <a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("yesterdayLinks")).get(client) %>'>Yesterday</a>
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#customModal" onclick="setupModal('<%=client %>')">Custom request</button>
                 </td>
             </tr>

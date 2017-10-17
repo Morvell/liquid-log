@@ -40,11 +40,12 @@ public class ClientsController
     @RequestMapping(path = "/")
     public ModelAndView index()
     {
+        int linksInOneDay = 288;
         List<String> clients = influxDAO.getDbList();
-        HashMap<String, Object> clientLast864Links = new HashMap<>();
-        HashMap<String, Object> clientLinks = new HashMap<>();
+        HashMap<String, Object> clientLast3DaysLinks = new HashMap<>();
+        HashMap<String, Object> clientYesterdayLinks = new HashMap<>();
         HashMap<String, Object> clientMonthLinks = new HashMap<>();
-        HashMap<String, Object> clientLast2016Links = new HashMap<>();
+        HashMap<String, Object> clientLast7DaysLinksLinks = new HashMap<>();
         HashMap<String, Object> clientPreviousMonthLinks = new HashMap<>();
 
         DateTime now = DateTime.now();
@@ -52,22 +53,21 @@ public class ClientsController
         DateTime yesterday = now.minusDays(1);
 
         clients.forEach(it -> {
-            clientLinks.put(it, "/history/" + it + "/" + yesterday.getYear() + "/" + yesterday.getMonthOfYear() + "/"
+            clientYesterdayLinks.put(it, "/history/" + it + "/" + yesterday.getYear() + "/" + yesterday.getMonthOfYear() + "/"
                     + yesterday.getDayOfMonth());
-
             clientMonthLinks.put(it, "/history/" + it + "/" + now.getYear() + "/" + now.getMonthOfYear());
             clientPreviousMonthLinks.put(it,
                     "/history/" + it + "/" + prevMonth.getYear() + "/" + prevMonth.getMonthOfYear());
-            clientLast864Links.put(it, "/history/" + it + "?count=864");
-            clientLast2016Links.put(it, "/history/" + it + "?count=2016");
+            clientLast3DaysLinks.put(it, "/history/" + it + "?count=" + 3*linksInOneDay);
+            clientLast7DaysLinksLinks.put(it, "/history/" + it + "?count=" + 7*linksInOneDay);
         });
 
         HashMap<String, Object> model = new HashMap<>();
         model.put("clients", clients);
-        model.put("links", clientLinks);
-        model.put("monthlinks", clientMonthLinks);
-        model.put("last864links", clientLast864Links);
-        model.put("last2016links", clientLast2016Links);
+        model.put("yesterdayLinks", clientYesterdayLinks);
+        model.put("monthLinks", clientMonthLinks);
+        model.put("last3DaysLinks", clientLast3DaysLinks);
+        model.put("last7DaysLinks", clientLast7DaysLinksLinks);
         model.put("prevMonthLinks", clientPreviousMonthLinks);
 
         return new ModelAndView("clients", model, HttpStatus.OK);

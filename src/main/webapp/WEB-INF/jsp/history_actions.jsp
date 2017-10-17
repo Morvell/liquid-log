@@ -26,6 +26,7 @@
 <%
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
     Number add[]=  (Number[])request.getAttribute(Constants.PerformedActions.ADD_ACTIONS);
+    Number catalogs[]=  (Number[])request.getAttribute(Constants.PerformedActions.GET_CATALOGS_ACTIONS);
     Number edit[] = (Number[])request.getAttribute(Constants.PerformedActions.EDIT_ACTIONS);
     Number list[] = (Number[])request.getAttribute(Constants.PerformedActions.LIST_ACTIONS);
     Number comment[] = (Number[])request.getAttribute(Constants.PerformedActions.COMMENT_ACTIONS);
@@ -96,9 +97,10 @@
 <div class="scroll-container">
 	<table class="table table-fixed header-fixed">
         <thead class="thead-inverse">
-            <th class="col-xs-4">Time</th>
+            <th class="col-xs-3">Time</th>
             <th class="col-xs-1">Summ</th>
             <th class="col-xs-1">Addobject</th>
+            <th class="col-xs-1">GetCatalogsAction</th>
             <th class="col-xs-1">EditObject</th>
             <th class="col-xs-1">GetList</th>
             <th class="col-xs-1">Comment</th>
@@ -108,8 +110,8 @@
         </thead>
         <tbody >
             <% for(int i=0;i<times.length;i++) {%>
-                <tr class="row">
-                    <td class="col-xs-4" style="text-align:center;">
+                <tr class="row" style="text-align: center">
+                    <td class="col-xs-3" style="text-align:center;">
                        <%= new java.util.Date(times[i].longValue()).toString() %>
                     </td>
                     <td class="col-xs-1">
@@ -117,6 +119,9 @@
                     </td>
                     <td class="col-xs-1" >
                         <%= add[i].intValue() %>
+                    </td>
+                    <td class="col-xs-1" >
+                        <%= catalogs[i].intValue() %>
                     </td>
                     <td class="col-xs-1">
                         <%= edit[i].intValue() %>
@@ -146,6 +151,7 @@
 <script type="text/javascript">
 var times = [];
 var add = [];
+var catalogs = [];
 var edit = [];
 var list = [];
 var comment = [];
@@ -157,6 +163,7 @@ var summ = [];
 <% for(int i=0;i<times.length;i++) {%>
     times.push((<%=times[i]%>));
     add.push([new Date(<%= times[i] %>), <%= add[i].intValue() %>]);
+    catalogs.push([new Date(<%= times[i] %>), <%= catalogs[i].intValue() %>]);
     edit.push([new Date(<%= times[i] %>), <%= edit[i].intValue() %>]);
     list.push([new Date(<%= times[i] %>), <%= list[i].intValue() %>]);
     comment.push([new Date(<%= times[i] %>), <%= comment[i].intValue() %>]);
@@ -171,6 +178,9 @@ document.getElementById('date_range').innerHTML += 'From: '+new Date(times[<%=ti
 
 if(localStorage.getItem('addActions')==null){
     localStorage.setItem('addActions', 'false');
+}
+if(localStorage.getItem('getCatalogsActions')){
+    localStorage.setItem('getCatalogsActions', 'false');
 }
 if(localStorage.getItem('editActions')==null){
     localStorage.setItem('editActions', 'false');
@@ -195,6 +205,7 @@ if(localStorage.getItem('summary')==null){
 }
 
 var addVisible = localStorage.getItem('addActions')==='true';
+var catalogsVisible = localStorage.getItem('getCatalogsActions')==='true';
 var editVisible = localStorage.getItem('editActions')==='true';
 var listVisible = localStorage.getItem('listActions')==='true';
 var commentVisible = localStorage.getItem('commentActions')==='true';
@@ -282,6 +293,10 @@ var myChart = Highcharts.chart('actions-chart-container', {
                         if(event.target.index==7){
                             localStorage.setItem('summary', !series[7].visible);
                         }
+                        if(event.target.index==8){
+                            localStorage.setItem('getCatalogsActions', !series[8].visible);
+                        }
+
                     }
                 }
             }
@@ -327,7 +342,12 @@ var myChart = Highcharts.chart('actions-chart-container', {
             data: summ,
             visible: summVisible,
             turboThreshold: 10000
-        }]
+        }, {
+                name: 'GetCatalogsActions',
+                data: catalogs,
+                visible: catalogsVisible,
+                turboThreshold: 10000
+            }]
 });
 
 </script>
