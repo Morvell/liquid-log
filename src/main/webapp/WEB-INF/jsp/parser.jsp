@@ -18,13 +18,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.css"/>
 </head>
 <body>
-<h2>Student Information</h2>
-
-<form action="result" method="POST">
-    <input type="text" >
-
-    <input type="submit" value="Search">
-</form>
 
 <form:form method="POST" commandName="parserDate" action="result">
 
