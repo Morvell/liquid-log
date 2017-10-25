@@ -21,14 +21,9 @@ public class PerfhouseApplication extends SpringBootServletInitializer
 
     public static void main(String[] args) throws IOException, ParseException
     {
-        if (System.getProperty("Parser") != null)
-        {
-            Parser.pars(args);
-        }
-        else
-        {
-            SpringApplication.run(PerfhouseApplication.class, args);
-        }
+
+        SpringApplication.run(PerfhouseApplication.class, args);
+
     }
 
 }

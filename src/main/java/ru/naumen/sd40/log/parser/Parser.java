@@ -61,7 +61,7 @@ public class Parser
             gcTime = new GCTimeParser(args[2]);
         }
 
-        String mode = System.getProperty("parse.mode", "");
+        String mode = "sdng";
         switch (mode)
         {
         case "sdng":
