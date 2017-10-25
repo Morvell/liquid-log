@@ -23,7 +23,7 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        String [] args = new String[]{parserDate.getNameForBD(),parserDate.getFilePath()};
+        String [] args = new String[]{parserDate.getFilePath(), parserDate.getNameForBD()};
         Parser.pars(args);
         return new ModelAndView("result_parser", "parserDate", parserDate);
     }
