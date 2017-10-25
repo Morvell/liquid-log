@@ -84,7 +84,7 @@
 				        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="formFrom">From</label>
-                                <input type="text"class="form-control" id="formFrom" name="from">
+                                <input type="text" class="form-control" id="formFrom" name="from">
                             </div>
                         </div>
                         <div class="col-md-6">

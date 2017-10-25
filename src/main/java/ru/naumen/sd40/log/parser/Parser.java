@@ -14,7 +14,7 @@ import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
 /**
  * Created by doki on 22.10.16.
  */
-public class App
+public class Parser
 {
     /**
      * 
@@ -22,7 +22,7 @@ public class App
      * @throws IOException
      * @throws ParseException
      */
-    public static void main(String[] args) throws IOException, ParseException
+    public static boolean pars(String[] args) throws IOException, ParseException
     {
         String influxDb = null;
 
@@ -155,5 +155,6 @@ public class App
             }
         });
         storage.writeBatch(points);
+        return true;
     }
 }
