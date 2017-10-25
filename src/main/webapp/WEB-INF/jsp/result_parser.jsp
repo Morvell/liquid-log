@@ -8,9 +8,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>$Title$</title>
+    <title>Title</title>
 </head>
 <body>
-$END$
+<p>Name for BD:  ${parserDate.nameForBD}</p>
+<p>parserConf:  ${parserDate.parserConf}</p>
+<p>filePath:  ${parserDate.filePath}</p>
+<p>timeZone:  ${parserDate.timeZone}</p>
+<p>trace:  ${parserDate.traceResult}</p>
 </body>
 </html>
