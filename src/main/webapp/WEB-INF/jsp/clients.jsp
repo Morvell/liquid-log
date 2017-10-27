@@ -46,7 +46,15 @@
   		<h3><strong>Attention!</strong><br>All requests for stored data are made with UTC time.<br>Requested data will be displayed in your browsers timezone.</h3>
 	</div>
 	<br>
+    <div class="container">
+        <div class="col-md-11">
     <h1>Client list</h1>
+        </div>
+        <div class="col-md-1">
+            <a class="btn btn-outline-primary" href='${pageContext.request.contextPath}parser'>Parse Log</a>
+        </div>
+
+    </div>
     <table class="table table-striped table-fixed"> <!-- table-bordered  -->
         <thead class="thead-inverse">
             <th class="col-xs-6">Name</th>
@@ -84,7 +92,7 @@
 				        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="formFrom">From</label>
-                                <input type="text"class="form-control" id="formFrom" name="from">
+                                <input type="text" class="form-control" id="formFrom" name="from">
                             </div>
                         </div>
                         <div class="col-md-6">

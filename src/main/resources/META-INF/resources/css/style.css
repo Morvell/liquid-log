@@ -31,3 +31,6 @@ table {
         .container {
         	width: 85%;
         }
+        .row {
+            text-align: center;
+        }

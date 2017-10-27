@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -8,65 +9,51 @@ import java.util.HashMap;
 
 import org.influxdb.dto.BatchPoints;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
 
 /**
  * Created by doki on 22.10.16.
  */
-public class App
+public class Parser
 {
     /**
      * 
-     * @param args [0] - sdng.log, [1] - gc.log, [2] - top, [3] - dbName, [4] timezone
+     *
      * @throws IOException
      * @throws ParseException
      */
-    public static void main(String[] args) throws IOException, ParseException
+    public static boolean parse(String nameBD, String parserConf, File filePath, String timeZone) throws IOException, ParseException
     {
-        String influxDb = null;
 
-        if (args.length > 1)
-        {
-            influxDb = args[1];
-            influxDb = influxDb.replaceAll("-", "_");
-        }
 
-        InfluxDAO storage = null;
-        if (influxDb != null)
-        {
-            storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
-                    System.getProperty("influx.password"));
-            storage.init();
-            storage.connectToDB(influxDb);
-        }
+
+        String influxDb = nameBD;
+        influxDb = influxDb.replaceAll("-", "_");
+
+
+
+        InfluxDAO storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
+                System.getProperty("influx.password"));
+        storage.init();
+        storage.connectToDB(influxDb);
+
         InfluxDAO finalStorage = storage;
         String finalInfluxDb = influxDb;
-        BatchPoints points = null;
+        BatchPoints points = storage.startBatchPoints(influxDb);;
 
-        if (storage != null)
-        {
-            points = storage.startBatchPoints(influxDb);
-        }
-
-        String log = args[0];
 
         HashMap<Long, DataSet> data = new HashMap<>();
 
-        TimeParser timeParser = new TimeParser();
-        GCTimeParser gcTime = new GCTimeParser();
-        if (args.length > 2)
-        {
-            timeParser = new TimeParser(args[2]);
-            gcTime = new GCTimeParser(args[2]);
-        }
+        TimeParser timeParser = new TimeParser(timeZone);
+        GCTimeParser gcTime = new GCTimeParser(timeZone);
 
-        String mode = System.getProperty("parse.mode", "");
-        switch (mode)
+        switch (parserConf)
         {
         case "sdng":
             //Parse sdng
-            try (BufferedReader br = new BufferedReader(new FileReader(log), 32 * 1024 * 1024))
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath), 32 * 1024 * 1024))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -88,7 +75,7 @@ public class App
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(log)))
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -108,17 +95,16 @@ public class App
             }
             break;
         case "top":
-            TopParser topParser = new TopParser(log, data);
-            if (args.length > 2)
-            {
-                topParser.configureTimeZone(args[2]);
-            }
+            TopParser topParser = new TopParser(filePath.getName(), data);
+
+            topParser.configureTimeZone(timeZone);
+
             //Parse top
             topParser.parse();
             break;
         default:
             throw new IllegalArgumentException(
-                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + mode);
+                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserConf);
         }
 
         if (System.getProperty("NoCsv") == null)
@@ -155,5 +141,6 @@ public class App
             }
         });
         storage.writeBatch(points);
+    return true;
     }
 }
