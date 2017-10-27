@@ -1,0 +1,25 @@
+.loading{
+    display: none;
+}
+
+svg {
+    position: absolute;
+}
+
+circle:nth-of-type(1) { fill: #75ddff; }
+circle:nth-of-type(2) { fill: #fcd837; }
+circle:nth-of-type(3) { fill: #f9a11f; }
+circle:nth-of-type(4) { fill: #f27c21; }
+
+#clackers {
+    /*   border: 1px solid white; */
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+body {
+    background: rgba(35, 31, 32, 0);
+}
