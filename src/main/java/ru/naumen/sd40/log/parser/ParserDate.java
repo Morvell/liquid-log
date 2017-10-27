@@ -7,14 +7,6 @@ public class ParserDate {
     private String timeZone;
     private Boolean traceResult;
 
-    public ParserDate(){
-        setNameForBD("Unset");
-        setParserConf("Unset");
-        setFilePath("Unset");
-        setTimeZone("Unset");
-        setTraceResult(false);
-    }
-
     public String getNameForBD() {
         return nameForBD;
     }
