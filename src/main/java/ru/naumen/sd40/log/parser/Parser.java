@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 
 import org.influxdb.dto.BatchPoints;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
 
@@ -22,7 +24,7 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static boolean pars(String nameBD, String parserConf, String filePath, String timeZone) throws IOException, ParseException
+    public static boolean parse(String nameBD, String parserConf, File filePath, String timeZone) throws IOException, ParseException
     {
 
 
@@ -42,8 +44,6 @@ public class Parser
         BatchPoints points = storage.startBatchPoints(influxDb);;
 
 
-        String log = filePath;
-
         HashMap<Long, DataSet> data = new HashMap<>();
 
         TimeParser timeParser = new TimeParser(timeZone);
@@ -53,7 +53,7 @@ public class Parser
         {
         case "sdng":
             //Parse sdng
-            try (BufferedReader br = new BufferedReader(new FileReader(log), 32 * 1024 * 1024))
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath), 32 * 1024 * 1024))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -75,7 +75,7 @@ public class Parser
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(log)))
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -95,7 +95,7 @@ public class Parser
             }
             break;
         case "top":
-            TopParser topParser = new TopParser(log, data);
+            TopParser topParser = new TopParser(filePath.getName(), data);
 
             topParser.configureTimeZone(timeZone);
 

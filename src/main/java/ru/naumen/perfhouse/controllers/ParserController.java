@@ -1,10 +1,12 @@
 package ru.naumen.perfhouse.controllers;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 import ru.naumen.sd40.log.parser.Parser;
 import ru.naumen.sd40.log.parser.ParserDate;
@@ -19,6 +21,13 @@ import java.text.ParseException;
 @Controller
 public class ParserController {
 
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(100000);
+        return new CommonsMultipartResolver();
+    }
+
     @RequestMapping(value = "/parser", method = RequestMethod.GET)
     public ModelAndView index()
     {
@@ -27,11 +36,11 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        Parser.pars(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
+        Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),uploadFile(parserDate.getFilePath()),parserDate.getTimeZone());
         return new ModelAndView("result_parser", "parserDate", parserDate);
     }
 
-    private void uploadFile(MultipartFile file) {
+    private File uploadFile(MultipartFile file) {
         String name = null;
 
         if (!file.isEmpty()) {
@@ -40,22 +49,17 @@ public class ParserController {
 
                 name = file.getOriginalFilename();
 
-                String rootPath = System.getProperty("catalina.home");
-                File dir = new File(rootPath + File.separator + "tmpFiles");
-
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                File uploadedFile = new File(dir.getAbsolutePath() + File.separator + name);
+                File uploadedFile = File.createTempFile(name,"temp");
 
                 BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile));
                 stream.write(bytes);
                 stream.flush();
                 stream.close();
+                return uploadedFile;
             } catch (Exception e) {
             }
         }
+        return null;
     }
 
 
