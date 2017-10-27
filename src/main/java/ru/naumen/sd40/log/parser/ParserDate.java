@@ -1,9 +1,11 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ParserDate {
     private String nameForBD;
     private String parserConf;
-    private String filePath;
+    private MultipartFile filePath;
     private String timeZone;
     private Boolean traceResult;
 
@@ -23,11 +25,11 @@ public class ParserDate {
         this.parserConf = parserConf;
     }
 
-    public String getFilePath() {
+    public MultipartFile getFilePath() {
         return filePath;
     }
 
-    public void setFilePath(String filePath) {
+    public void setFilePath(MultipartFile filePath) {
         this.filePath = filePath;
     }
 

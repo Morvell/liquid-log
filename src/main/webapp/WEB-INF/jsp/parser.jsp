@@ -30,7 +30,7 @@
     }
 </script>
 
-<form:form method="POST" commandName="parserDate" action="result">
+<form:form method="POST" commandName="parserDate" action="result" enctype="multipart/form-data">
     <div class="container">
         <div class="col-md-4" id="main">
             <form:label path="nameForBD">Name:</form:label>
@@ -44,8 +44,8 @@
             </form:select>
 
 
-        <form:label path="filePath">FilePath:</form:label>
-        <form:input cssClass="form-control" path="filePath"/>
+            <form:label path="filePath">Select a file to upload</form:label>
+            <input type="file" name="filePath" />
 
             <label for="timeZone">TimeZone:</label>
             <form:select path="timeZone" class="form-control" id="timeZone">
