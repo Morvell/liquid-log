@@ -22,7 +22,7 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static boolean pars(String nameBD, String parserConf, String filePath, String timeZone) throws IOException, ParseException
+    public static boolean parse(String nameBD, String parserConf, String filePath, String timeZone) throws IOException, ParseException
     {
 
 
