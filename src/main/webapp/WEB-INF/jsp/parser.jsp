@@ -31,6 +31,7 @@
 </script>
 
 <form:form method="POST" commandName="parserDate" action="result">
+    <div class="container">
         <div class="col-md-4" id="main">
             <form:label path="nameForBD">Name:</form:label>
             <form:input cssClass="form-control" path="nameForBD"/>
@@ -77,9 +78,10 @@
                 <option>GMT-12</option>
             </form:select>
         <form:label path="traceResult">TraceResult:</form:label>
-        <form:checkbox class="checkbox" path="traceResult"/>
+        <form:checkbox class="checkbox" path="traceResult"/><br><br>
         <button class="btn btn-primary" onclick="load()">Pars</button>
         </div>
+    </div>
 
     <div class="loading" id="loading">
         <svg width="300" height="120" id="clackers">
