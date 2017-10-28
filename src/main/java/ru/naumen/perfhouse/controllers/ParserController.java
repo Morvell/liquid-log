@@ -1,5 +1,6 @@
 package ru.naumen.perfhouse.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.naumen.sd40.log.parser.Parser;
 import ru.naumen.sd40.log.parser.ParserDate;
 
+import javax.inject.Inject;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +38,7 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),uploadFile(parserDate.getFilePath()),parserDate.getTimeZone());
+        Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
         return new ModelAndView("result_parser", "parserDate", parserDate);
     }
 

@@ -1,9 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.util.HashMap;
 
@@ -24,7 +21,7 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static boolean parse(String nameBD, String parserConf, File filePath, String timeZone) throws IOException, ParseException
+    public static boolean parse(String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
     {
 
 
@@ -53,7 +50,7 @@ public class Parser
         {
         case "sdng":
             //Parse sdng
-            try (BufferedReader br = new BufferedReader(new FileReader(filePath), 32 * 1024 * 1024))
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(filePath.getInputStream())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -75,7 +72,7 @@ public class Parser
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(filePath)))
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath.getName())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
