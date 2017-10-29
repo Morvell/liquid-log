@@ -23,6 +23,7 @@ public class ActionDoneParser
 
     ArrayList<Integer> times = new ArrayList<>();
     long k;
+    long error;
     double min;
     double mean;
     double stddev;
@@ -135,6 +136,14 @@ public class ActionDoneParser
     public double getMin()
     {
         return min;
+    }
+
+    public long getError() {
+        return error;
+    }
+
+    public void setError(long error) {
+        this.error = error;
     }
 
     public double getPercent50()

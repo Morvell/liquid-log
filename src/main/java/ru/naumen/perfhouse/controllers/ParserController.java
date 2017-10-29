@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
-import ru.naumen.sd40.log.parser.ActionDoneParser;
-import ru.naumen.sd40.log.parser.DataSet;
-import ru.naumen.sd40.log.parser.Parser;
-import ru.naumen.sd40.log.parser.ParserDate;
+import ru.naumen.sd40.log.parser.*;
 
 import javax.inject.Inject;
 import java.io.BufferedOutputStream;
@@ -44,14 +41,22 @@ public class ParserController {
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
         HashMap<Long, DataSet> data = Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
-        ArrayList<ActionDoneParser> date = new ArrayList<>();
-        data.forEach((aLong, set) -> {
-            ActionDoneParser dones = set.getActionsDone();
-            dones.calculate();
-            dones.setK(aLong);
-            date.add(dones);
-        });
-        return new ModelAndView("result_parser", "date", date);
+        if (parserDate.getTraceResult()) {
+            ArrayList<ActionDoneParser> date = new ArrayList<>();
+            data.forEach((aLong, set) -> {
+                ActionDoneParser dones = set.getActionsDone();
+                dones.calculate();
+                ErrorParser erros = set.getErrors();
+                dones.setError(erros.getErrorCount());
+                dones.setK(aLong);
+
+                date.add(dones);
+            });
+            return new ModelAndView("result_parser", "date", date);
+        }
+        else {
+            return new ModelAndView("result_parser_without_log");
+        }
     }
 
     private File uploadFile(MultipartFile file) {
