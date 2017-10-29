@@ -66,29 +66,5 @@ public class ParserController {
             return new ModelAndView("result_parser_without_log");
         }
     }
-
-    private File uploadFile(MultipartFile file) {
-        String name = null;
-
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-
-                name = file.getOriginalFilename();
-
-                File uploadedFile = File.createTempFile(name,"temp");
-
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile));
-                stream.write(bytes);
-                stream.flush();
-                stream.close();
-                return uploadedFile;
-            } catch (Exception e) {
-            }
-        }
-        return null;
-    }
-
-
-
+    
 }
