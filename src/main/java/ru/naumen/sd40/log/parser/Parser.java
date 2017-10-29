@@ -6,9 +6,13 @@ import java.util.HashMap;
 
 import org.influxdb.dto.BatchPoints;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
+
+import javax.inject.Inject;
 
 /**
  * Created by doki on 22.10.16.
@@ -16,23 +20,14 @@ import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
 public class Parser
 {
     /**
-     * 
-     *
      * @throws IOException
      * @throws ParseException
      */
-    public static HashMap<Long, DataSet> parse(String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
+    public static HashMap<Long, DataSet> parse(InfluxDAO influxDAO, String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
     {
-
-
-
         String influxDb = nameBD;
         influxDb = influxDb.replaceAll("-", "_");
-
-
-
-        InfluxDAO storage = new InfluxDAO(System.getProperty("influx.host"), System.getProperty("influx.user"),
-                System.getProperty("influx.password"));
+        InfluxDAO storage = influxDAO;
         storage.init();
         storage.connectToDB(influxDb);
 
