@@ -32,9 +32,11 @@
 
 <form:form method="POST" commandName="parserDate" action="result" enctype="multipart/form-data">
     <div class="container">
-        <h3><a class="btn btn-success btn-lg" href="/">Client list</a></h3>
+
 
         <div class="col-md-4" id="main">
+            <h3><a class="btn btn-success btn-lg" href="/">Client list</a></h3>
+            <br>
             <form:label path="nameForBD">Name:</form:label>
             <form:input cssClass="form-control" path="nameForBD"/>
 
