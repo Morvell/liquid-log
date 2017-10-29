@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
+import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.sd40.log.parser.*;
 
 import javax.inject.Inject;
@@ -25,6 +26,8 @@ import java.util.HashMap;
 @Controller
 public class ParserController {
 
+    private InfluxDAO influxDAO;
+
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
@@ -38,9 +41,14 @@ public class ParserController {
         return new ModelAndView("parser", "parserDate", new ParserDate());
     }
 
+    @Inject
+    public ParserController(InfluxDAO influxDAO){
+        this.influxDAO = influxDAO;
+    }
+
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        HashMap<Long, DataSet> data = Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
+        HashMap<Long, DataSet> data = Parser.parse(influxDAO, parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
         if (parserDate.getTraceResult()) {
             ArrayList<ActionDoneParser> date = new ArrayList<>();
             data.forEach((aLong, set) -> {
