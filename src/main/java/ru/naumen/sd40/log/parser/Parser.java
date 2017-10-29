@@ -1,18 +1,16 @@
 package ru.naumen.sd40.log.parser;
 
-import java.io.*;
-import java.text.ParseException;
-import java.util.HashMap;
-
 import org.influxdb.dto.BatchPoints;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
 
-import javax.inject.Inject;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.util.HashMap;
 
 /**
  * Created by doki on 22.10.16.
