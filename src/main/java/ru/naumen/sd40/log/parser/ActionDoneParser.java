@@ -22,6 +22,7 @@ public class ActionDoneParser
     }
 
     ArrayList<Integer> times = new ArrayList<>();
+    long k;
     double min;
     double mean;
     double stddev;
@@ -91,6 +92,14 @@ public class ActionDoneParser
     public long getCount()
     {
         return count;
+    }
+
+    public long getK() {
+        return k;
+    }
+
+    public void setK(long k) {
+        this.k = k;
     }
 
     public Pattern getDoneRegEx()

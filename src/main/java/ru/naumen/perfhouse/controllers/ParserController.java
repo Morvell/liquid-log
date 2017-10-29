@@ -1,5 +1,6 @@
 package ru.naumen.perfhouse.controllers;
 
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
+import ru.naumen.sd40.log.parser.ActionDoneParser;
+import ru.naumen.sd40.log.parser.DataSet;
 import ru.naumen.sd40.log.parser.Parser;
 import ru.naumen.sd40.log.parser.ParserDate;
 
@@ -18,6 +21,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 @Controller
@@ -38,8 +43,15 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
-        return new ModelAndView("result_parser", "parserDate", parserDate);
+        HashMap<Long, DataSet> data = Parser.parse(parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
+        ArrayList<ActionDoneParser> date = new ArrayList<>();
+        data.forEach((aLong, set) -> {
+            ActionDoneParser dones = set.getActionsDone();
+            dones.calculate();
+            dones.setK(aLong);
+            date.add(dones);
+        });
+        return new ModelAndView("result_parser", "date", date);
     }
 
     private File uploadFile(MultipartFile file) {

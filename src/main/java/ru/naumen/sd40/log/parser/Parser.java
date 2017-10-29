@@ -21,7 +21,7 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static boolean parse(String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
+    public static HashMap<Long, DataSet> parse(String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
     {
 
 
@@ -138,6 +138,6 @@ public class Parser
             }
         });
         storage.writeBatch(points);
-    return true;
+    return data;
     }
 }
