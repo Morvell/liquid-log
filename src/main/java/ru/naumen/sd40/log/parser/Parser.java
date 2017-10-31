@@ -25,26 +25,23 @@ public class Parser
      */
     public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, ParserDate parserDate) throws IOException, ParseException
     {
-        String nameBD = parserDate.getNameForBD();
-        String parserConf = parserDate.getParserConf();
-        MultipartFile filePath = parserDate.getFilePath();
-        String timeZone = parserDate.getTimeZone();
-        Boolean traceResult = parserDate.getTraceResult();
-                
-        String influxDb = nameBD;
+        String influxDb = parserDate.getNameForBD();
         influxDb = influxDb.replaceAll("-", "_");
         influxDAO.init();
         influxDAO.connectToDB(influxDb);
 
         String finalInfluxDb = influxDb;
-        BatchPoints points = influxDAO.startBatchPoints(influxDb);;
-
+        BatchPoints points = influxDAO.startBatchPoints(influxDb);
 
         HashMap<Long, DataSet> data = new HashMap<>();
 
+        String timeZone = parserDate.getTimeZone();
         TimeParser timeParser = new TimeParser(timeZone);
         GCTimeParser gcTime = new GCTimeParser(timeZone);
 
+        MultipartFile filePath = parserDate.getFilePath();
+        String parserConf = parserDate.getParserConf();
+        
         switch (parserConf)
         {
         case "sdng":
@@ -103,7 +100,10 @@ public class Parser
                     "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserConf);
         }
 
+        Boolean traceResult = parserDate.getTraceResult();
+
         List<AfterParseLogStat> logStats = new ArrayList<>();
+
         data.forEach((k, set) ->
         {
             ActionDoneParser dones = set.getActionsDone();
