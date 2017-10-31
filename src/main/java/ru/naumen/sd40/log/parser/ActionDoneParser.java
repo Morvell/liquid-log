@@ -22,8 +22,6 @@ public class ActionDoneParser
     }
 
     ArrayList<Integer> times = new ArrayList<>();
-    long k;
-    long error;
     double min;
     double mean;
     double stddev;
@@ -95,14 +93,6 @@ public class ActionDoneParser
         return count;
     }
 
-    public long getK() {
-        return k;
-    }
-
-    public void setK(long k) {
-        this.k = k;
-    }
-
     public Pattern getDoneRegEx()
     {
         return doneRegEx;
@@ -136,14 +126,6 @@ public class ActionDoneParser
     public double getMin()
     {
         return min;
-    }
-
-    public long getError() {
-        return error;
-    }
-
-    public void setError(long error) {
-        this.error = error;
     }
 
     public double getPercent50()
