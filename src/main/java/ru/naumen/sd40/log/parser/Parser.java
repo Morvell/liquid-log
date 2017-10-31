@@ -10,7 +10,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by doki on 22.10.16.
@@ -21,17 +23,15 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static HashMap<Long, DataSet> parse(InfluxDAO influxDAO, String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
+    public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
     {
         String influxDb = nameBD;
         influxDb = influxDb.replaceAll("-", "_");
-        InfluxDAO storage = influxDAO;
-        storage.init();
-        storage.connectToDB(influxDb);
+        influxDAO.init();
+        influxDAO.connectToDB(influxDb);
 
-        InfluxDAO finalStorage = storage;
         String finalInfluxDb = influxDb;
-        BatchPoints points = storage.startBatchPoints(influxDb);;
+        BatchPoints points = influxDAO.startBatchPoints(influxDb);;
 
 
         HashMap<Long, DataSet> data = new HashMap<>();
@@ -101,12 +101,14 @@ public class Parser
         {
             System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
         }
-        BatchPoints finalPoints = points;
+
+        List<AfterParseLogStat> logStats = new ArrayList<>();
         data.forEach((k, set) ->
         {
             ActionDoneParser dones = set.getActionsDone();
             dones.calculate();
             ErrorParser erros = set.getErrors();
+            logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));
             if (System.getProperty("NoCsv") == null)
             {
                 System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", k, dones.getCount(),
@@ -115,22 +117,22 @@ public class Parser
             }
             if (!dones.isNan())
             {
-                finalStorage.storeActionsFromLog(finalPoints, finalInfluxDb, k, dones, erros);
+                influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);
             }
 
             GCParser gc = set.getGc();
             if (!gc.isNan())
             {
-                finalStorage.storeGc(finalPoints, finalInfluxDb, k, gc);
+                influxDAO.storeGc(points, finalInfluxDb, k, gc);
             }
 
             TopData cpuData = set.cpuData();
             if (!cpuData.isNan())
             {
-                finalStorage.storeTop(finalPoints, finalInfluxDb, k, cpuData);
+                influxDAO.storeTop(points, finalInfluxDb, k, cpuData);
             }
         });
-        storage.writeBatch(points);
-    return data;
+        influxDAO.writeBatch(points);
+    return logStats;
     }
 }

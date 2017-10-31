@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 @Controller
@@ -42,19 +43,9 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        HashMap<Long, DataSet> data = Parser.parse(influxDAO, parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
+        List<AfterParseLogStat> data = Parser.parse(influxDAO, parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
         if (parserDate.getTraceResult()) {
-            ArrayList<ActionDoneParser> date = new ArrayList<>();
-            data.forEach((aLong, set) -> {
-                ActionDoneParser dones = set.getActionsDone();
-                dones.calculate();
-                ErrorParser erros = set.getErrors();
-                dones.setError(erros.getErrorCount());
-                dones.setK(aLong);
-
-                date.add(dones);
-            });
-            return new ModelAndView("result_parser", "date", date);
+            return new ModelAndView("result_parser", "date", data);
         }
         else {
             return new ModelAndView("result_parser_without_log");

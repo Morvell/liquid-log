@@ -47,7 +47,7 @@
 
                 <tr class="row">
                     <td class="col-xs-2">
-                            ${num.getK()}
+                            ${num.getTimestemp()}
                     </td>
                     <td class="col-xs-1">
                             ${num.getCount()}
