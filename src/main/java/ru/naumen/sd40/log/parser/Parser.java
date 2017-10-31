@@ -23,8 +23,14 @@ public class Parser
      * @throws IOException
      * @throws ParseException
      */
-    public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, String nameBD, String parserConf, MultipartFile filePath, String timeZone) throws IOException, ParseException
+    public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, ParserDate parserDate) throws IOException, ParseException
     {
+        String nameBD = parserDate.getNameForBD();
+        String parserConf = parserDate.getParserConf();
+        MultipartFile filePath = parserDate.getFilePath();
+        String timeZone = parserDate.getTimeZone();
+        Boolean traceResult = parserDate.getTraceResult();
+                
         String influxDb = nameBD;
         influxDb = influxDb.replaceAll("-", "_");
         influxDAO.init();
@@ -97,24 +103,14 @@ public class Parser
                     "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserConf);
         }
 
-        if (System.getProperty("NoCsv") == null)
-        {
-            System.out.print("Timestamp;Actions;Min;Mean;Stddev;50%%;95%%;99%%;99.9%%;Max;Errors\n");
-        }
-
         List<AfterParseLogStat> logStats = new ArrayList<>();
         data.forEach((k, set) ->
         {
             ActionDoneParser dones = set.getActionsDone();
             dones.calculate();
             ErrorParser erros = set.getErrors();
-            logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));
-            if (System.getProperty("NoCsv") == null)
-            {
-                System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", k, dones.getCount(),
-                        dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
-                        dones.getPercent99(), dones.getPercent999(), dones.getMax(), erros.getErrorCount()));
-            }
+            if(traceResult) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
+
             if (!dones.isNan())
             {
                 influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);

@@ -43,7 +43,7 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        List<AfterParseLogStat> data = Parser.parse(influxDAO, parserDate.getNameForBD(),parserDate.getParserConf(),parserDate.getFilePath(),parserDate.getTimeZone());
+        List<AfterParseLogStat> data = Parser.parse(influxDAO, parserDate);
         if (parserDate.getTraceResult()) {
             return new ModelAndView("result_parser", "date", data);
         }
