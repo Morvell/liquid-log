@@ -35,14 +35,12 @@ public class Parser
 
         HashMap<Long, DataSet> data = new HashMap<>();
 
-        String timeZone = parserDate.getTimeZone();
-        TimeParser timeParser = new TimeParser(timeZone);
-        GCTimeParser gcTime = new GCTimeParser(timeZone);
+        TimeParser timeParser = new TimeParser(parserDate.getTimeZone());
+        GCTimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
 
         MultipartFile filePath = parserDate.getFilePath();
-        String parserConf = parserDate.getParserConf();
         
-        switch (parserConf)
+        switch (parserDate.getParserConf())
         {
         case "sdng":
             //Parse sdng
@@ -90,14 +88,14 @@ public class Parser
         case "top":
             TopParser topParser = new TopParser(filePath.getName(), data);
 
-            topParser.configureTimeZone(timeZone);
+            topParser.configureTimeZone(parserDate.getTimeZone());
 
             //Parse top
             topParser.parse();
             break;
         default:
             throw new IllegalArgumentException(
-                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserConf);
+                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserDate.getParserConf());
         }
 
         Boolean traceResult = parserDate.getTraceResult();
