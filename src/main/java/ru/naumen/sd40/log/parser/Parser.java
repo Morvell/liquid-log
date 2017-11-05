@@ -35,18 +35,14 @@ public class Parser
 
         HashMap<Long, DataSet> data = new HashMap<>();
 
-        String timeZone = parserDate.getTimeZone();
-        TimeParser timeParser = new TimeParser(timeZone);
-        GCTimeParser gcTime = new GCTimeParser(timeZone);
-
-        MultipartFile filePath = parserDate.getFilePath();
-        String parserConf = parserDate.getParserConf();
+        TimeParser timeParser = new TimeParser(parserDate.getTimeZone());
+        GCTimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
         
-        switch (parserConf)
+        switch (parserDate.getParserConf())
         {
         case "sdng":
             //Parse sdng
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(filePath.getInputStream())))
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(parserDate.getFilePath().getInputStream())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -68,7 +64,7 @@ public class Parser
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(filePath.getName())))
+            try (BufferedReader br = new BufferedReader(new FileReader(parserDate.getFilePath().getName())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -88,19 +84,17 @@ public class Parser
             }
             break;
         case "top":
-            TopParser topParser = new TopParser(filePath.getName(), data);
+            TopParser topParser = new TopParser(parserDate.getFilePath().getName(), data);
 
-            topParser.configureTimeZone(timeZone);
+            topParser.configureTimeZone(parserDate.getTimeZone());
 
             //Parse top
             topParser.parse();
             break;
         default:
             throw new IllegalArgumentException(
-                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserConf);
+                    "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserDate.getParserConf());
         }
-
-        Boolean traceResult = parserDate.getTraceResult();
 
         List<AfterParseLogStat> logStats = new ArrayList<>();
 
@@ -109,7 +103,7 @@ public class Parser
             ActionDoneParser dones = set.getActionsDone();
             dones.calculate();
             ErrorParser erros = set.getErrors();
-            if(traceResult) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
+            if(parserDate.getTraceResult()) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
 
             if (!dones.isNan())
             {
