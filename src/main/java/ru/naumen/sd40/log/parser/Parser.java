@@ -37,14 +37,12 @@ public class Parser
 
         TimeParser timeParser = new TimeParser(parserDate.getTimeZone());
         GCTimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
-
-        MultipartFile filePath = parserDate.getFilePath();
         
         switch (parserDate.getParserConf())
         {
         case "sdng":
             //Parse sdng
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(filePath.getInputStream())))
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(parserDate.getFilePath().getInputStream())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -66,7 +64,7 @@ public class Parser
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(filePath.getName())))
+            try (BufferedReader br = new BufferedReader(new FileReader(parserDate.getFilePath().getName())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
@@ -86,7 +84,7 @@ public class Parser
             }
             break;
         case "top":
-            TopParser topParser = new TopParser(filePath.getName(), data);
+            TopParser topParser = new TopParser(parserDate.getFilePath().getName(), data);
 
             topParser.configureTimeZone(parserDate.getTimeZone());
 
@@ -98,8 +96,6 @@ public class Parser
                     "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserDate.getParserConf());
         }
 
-        Boolean traceResult = parserDate.getTraceResult();
-
         List<AfterParseLogStat> logStats = new ArrayList<>();
 
         data.forEach((k, set) ->
@@ -107,7 +103,7 @@ public class Parser
             ActionDoneParser dones = set.getActionsDone();
             dones.calculate();
             ErrorParser erros = set.getErrors();
-            if(traceResult) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
+            if(parserDate.getTraceResult()) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
 
             if (!dones.isNan())
             {
