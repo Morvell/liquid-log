@@ -64,7 +64,7 @@ public class Parser
             break;
         case "gc":
             //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(parserDate.getFilePath().getName())))
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(parserDate.getFilePath().getInputStream())))
             {
                 String line;
                 while ((line = br.readLine()) != null)
