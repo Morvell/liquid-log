@@ -1,8 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -52,9 +50,9 @@ public class TopParser
         sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
     }
 
-    public void parse() throws IOException, ParseException
+    public void parse(InputStream is) throws IOException, ParseException
     {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName)))
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
         {
             String line;
             while ((line = br.readLine()) != null)

@@ -84,12 +84,12 @@ public class Parser
             }
             break;
         case "top":
-            TopParser topParser = new TopParser(parserDate.getFilePath().getName(), data);
+            TopParser topParser = new TopParser(parserDate.getFilePath().getOriginalFilename(), data);
 
             topParser.configureTimeZone(parserDate.getTimeZone());
 
             //Parse top
-            topParser.parse();
+            topParser.parse(parserDate.getFilePath().getInputStream());
             break;
         default:
             throw new IllegalArgumentException(
