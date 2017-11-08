@@ -1,12 +1,10 @@
 package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
-import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
+import ru.naumen.perfhouse.interfaces.ITimeParser;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
@@ -35,8 +33,8 @@ public class Parser
 
         HashMap<Long, DataSet> data = new HashMap<>();
 
-        TimeParser timeParser = new TimeParser(parserDate.getTimeZone());
-        GCTimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
+        ITimeParser sdngTimeParser = new SDNGTimeParser(parserDate.getTimeZone());
+        ITimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
         
         switch (parserDate.getParserConf())
         {
@@ -47,7 +45,7 @@ public class Parser
                 String line;
                 while ((line = br.readLine()) != null)
                 {
-                    long time = timeParser.parseLine(line);
+                    long time = sdngTimeParser.parseTime(line);
 
                     if (time == 0)
                     {

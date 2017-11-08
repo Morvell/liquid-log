@@ -8,11 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import ru.naumen.perfhouse.interfaces.IDataParser;
 
 /**
  * Created by doki on 22.10.16.
  */
-public class ActionDoneParser
+public class ActionDoneParser implements IDataParser
 {
     private static Set<String> EXCLUDED_ACTIONS = new HashSet<>();
 
