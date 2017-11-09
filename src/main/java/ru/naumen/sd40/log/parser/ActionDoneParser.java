@@ -13,7 +13,7 @@ import ru.naumen.perfhouse.interfaces.IDataParser;
 /**
  * Created by doki on 22.10.16.
  */
-public class ActionDoneParser implements IDataParser
+public class ActionDoneParser
 {
     private static Set<String> EXCLUDED_ACTIONS = new HashSet<>();
 
