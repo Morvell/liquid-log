@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import ru.naumen.perfhouse.interfaces.IDataParser;
 
 /**
  * Created by doki on 22.10.16.
