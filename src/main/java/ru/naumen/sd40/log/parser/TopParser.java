@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import ru.naumen.perfhouse.interfaces.IDataParser;
+
 import java.io.*;
 import java.text.ParseException;
 import java.util.regex.Matcher;
@@ -10,7 +12,7 @@ import java.util.regex.Pattern;
  * @author dkolmogortsev
  *
  */
-public class TopParser
+public class TopParser implements IDataParser
 {
 
     private Pattern cpuAndMemPattren = Pattern

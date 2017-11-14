@@ -20,6 +20,8 @@ public class SDNGTimeParser implements ITimeParser
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS",
             new Locale("ru", "RU"));
 
+    private boolean parse = false;
+
     public SDNGTimeParser()
     {
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -34,13 +36,19 @@ public class SDNGTimeParser implements ITimeParser
     public long parseTime(String line) throws ParseException
     {
         Matcher matcher = TIME_PATTERN.matcher(line);
-
+        long time = 0L;
         if (matcher.find())
         {
             String timeString = matcher.group(1);
             Date recDate = DATE_FORMAT.parse(timeString);
-            return recDate.getTime();
+            time = recDate.getTime();
+            parse = time != 0;
         }
-        return 0L;
+        return time;
+    }
+
+    @Override
+    public boolean isParse() {
+        return parse;
     }
 }

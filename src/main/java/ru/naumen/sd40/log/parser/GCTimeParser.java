@@ -18,6 +18,8 @@ public class GCTimeParser implements ITimeParser {
     private static final Pattern PATTERN = Pattern
             .compile("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}\\+\\d{4}).*");
 
+    private boolean parse = false;
+
     public GCTimeParser()
     {
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -32,11 +34,18 @@ public class GCTimeParser implements ITimeParser {
     public long parseTime(String line) throws ParseException
     {
         Matcher matcher = PATTERN.matcher(line);
+        long time = 0L;
         if (matcher.find())
         {
-            Date parse = DATE_FORMAT.parse(matcher.group(1));
-            return parse.getTime();
+            Date parserDate = DATE_FORMAT.parse(matcher.group(1));
+            time = parserDate.getTime();
+            parse = time != 0;
         }
-        return 0L;
+        return time;
+    }
+
+    @Override
+    public boolean isParse() {
+        return parse;
     }
 }

@@ -14,6 +14,10 @@ public class TopTimeParser implements ITimeParser {
 
     private Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
 
+    private long currentTime = 0;
+
+    private boolean parse = false;
+
     private String fileName;
 
     public TopTimeParser(String fileName) {
@@ -39,12 +43,26 @@ public class TopTimeParser implements ITimeParser {
 
     @Override
     public long parseTime(String line) throws ParseException {
-
+        long time = 0;
         Matcher matcher = timeRegex.matcher(line);
         if (matcher.find())
         {
-            return sdf.parse(this.fileName + matcher.group(1)).getTime();
+
+            time = sdf.parse(this.fileName + matcher.group(1)).getTime();
         }
-        return 0;
+
+        if (time == currentTime || (currentTime !=0 && time ==0)){
+            parse = true;
+        }
+        else parse = false;
+
+        currentTime = time;
+
+        return time;
+    }
+
+    @Override
+    public boolean isParse() {
+        return parse;
     }
 }
