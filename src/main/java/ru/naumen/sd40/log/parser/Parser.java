@@ -119,8 +119,9 @@ public class Parser
             String line;
             while ((line = br.readLine()) != null)
             {
+                if (line.isEmpty()) continue;
                 long time = timeParser.parseTime(line);
-                if (Objects.equals(line, "")) continue;
+
                 if (time != 0)
                 {
                     int min5 = 5 * 60 * 1000;
