@@ -1,6 +1,8 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.sdng;
 
 import ru.naumen.perfhouse.interfaces.IDataParser;
+import ru.naumen.sd40.log.parser.ActionDoneParser;
+import ru.naumen.sd40.log.parser.ErrorParser;
 
 public class SdngDataParser implements IDataParser {
 

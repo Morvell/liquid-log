@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.gc;
 
 import ru.naumen.perfhouse.interfaces.ITimeParser;
 

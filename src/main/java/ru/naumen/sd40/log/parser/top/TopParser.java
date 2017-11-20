@@ -1,6 +1,7 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.top;
 
 import ru.naumen.perfhouse.interfaces.IDataParser;
+import ru.naumen.sd40.log.parser.TopData;
 
 import java.io.*;
 import java.text.ParseException;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 public class TopParser implements IDataParser
 {
 
-    private Pattern cpuAndMemPattren = Pattern
+    private final Pattern cpuAndMemPattren = Pattern
             .compile("^ *\\d+ \\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ \\S+ +(\\S+) +(\\S+) +\\S+ java");
 
     private TopData cpuData = new TopData();

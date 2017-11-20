@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.statdata.Constants;
 import ru.naumen.sd40.log.parser.ActionDoneParser;
 import ru.naumen.sd40.log.parser.ErrorParser;
-import ru.naumen.sd40.log.parser.GCParser;
+import ru.naumen.sd40.log.parser.gc.GCParser;
 import ru.naumen.sd40.log.parser.TopData;
 
 /**

@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.sdng;
 
 import ru.naumen.perfhouse.interfaces.ITimeParser;
 
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by doki on 22.10.16.
  */
-public class SDNGTimeParser implements ITimeParser
+public class SdngTimeParser implements ITimeParser
 {
     private static final Pattern TIME_PATTERN = Pattern
             .compile("^\\d+ \\[.*?\\] \\((\\d{2} .{3} \\d{4} \\d{2}:\\d{2}:\\d{2},\\d{3})\\)");
@@ -22,12 +22,12 @@ public class SDNGTimeParser implements ITimeParser
 
     private boolean parse = false;
 
-    public SDNGTimeParser()
+    public SdngTimeParser()
     {
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
-    public SDNGTimeParser(String zoneId)
+    public SdngTimeParser(String zoneId)
     {
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(zoneId));
     }
