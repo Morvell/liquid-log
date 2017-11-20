@@ -1,30 +1,33 @@
 package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
-import org.springframework.web.multipart.MultipartFile;
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.sd40.log.parser.GCParser.GCTimeParser;
+import ru.naumen.perfhouse.interfaces.IDataParser;
+import ru.naumen.perfhouse.interfaces.ITimeParser;
+import ru.naumen.sd40.log.parser.gc.GCParser;
+import ru.naumen.sd40.log.parser.gc.GCTimeParser;
+import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
+import ru.naumen.sd40.log.parser.sdng.SdngTimeParser;
+import ru.naumen.sd40.log.parser.top.TopParser;
+import ru.naumen.sd40.log.parser.top.TopTimeParser;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by doki on 22.10.16.
- */
+
 public class Parser
 {
     /**
      * @throws IOException
      * @throws ParseException
      */
-    public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, ParserDate parserDate) throws IOException, ParseException
-    {
+    public static List<AfterParseLogStat> parse(InfluxDAO influxDAO, ParserDate parserDate) throws IOException, ParseException {
         String influxDb = parserDate.getNameForBD();
         influxDb = influxDb.replaceAll("-", "_");
         influxDAO.init();
@@ -33,96 +36,111 @@ public class Parser
         String finalInfluxDb = influxDb;
         BatchPoints points = influxDAO.startBatchPoints(influxDb);
 
-        HashMap<Long, DataSet> data = new HashMap<>();
+        List<AfterParseLogStat> logStats = new ArrayList<>();
 
-        TimeParser timeParser = new TimeParser(parserDate.getTimeZone());
-        GCTimeParser gcTime = new GCTimeParser(parserDate.getTimeZone());
-        
-        switch (parserDate.getParserConf())
-        {
-        case "sdng":
-            //Parse sdng
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(parserDate.getFilePath().getInputStream())))
-            {
-                String line;
-                while ((line = br.readLine()) != null)
-                {
-                    long time = timeParser.parseLine(line);
+        HashMap<Long, IDataParser> data;
 
-                    if (time == 0)
-                    {
-                        continue;
-                    }
+        switch (parserDate.getParserConf()) {
+            case "sdng":
+                data = readAndParse("sdng",
+                        parserDate.getFilePath().getInputStream(),
+                        new SdngTimeParser(parserDate.getTimeZone()));
 
-                    int min5 = 5 * 60 * 1000;
-                    long count = time / min5;
-                    long key = count * min5;
-
-                    data.computeIfAbsent(key, k -> new DataSet()).parseLine(line);
-                }
-            }
-            break;
-        case "gc":
-            //Parse gc log
-            try (BufferedReader br = new BufferedReader(new FileReader(parserDate.getFilePath().getName())))
-            {
-                String line;
-                while ((line = br.readLine()) != null)
-                {
-                    long time = gcTime.parseTime(line);
-
-                    if (time == 0)
-                    {
-                        continue;
-                    }
-
-                    int min5 = 5 * 60 * 1000;
-                    long count = time / min5;
-                    long key = count * min5;
-                    data.computeIfAbsent(key, k -> new DataSet()).parseGcLine(line);
-                }
-            }
-            break;
-        case "top":
-            TopParser topParser = new TopParser(parserDate.getFilePath().getName(), data);
-
-            topParser.configureTimeZone(parserDate.getTimeZone());
-
-            //Parse top
-            topParser.parse();
-            break;
+                break;
+            case "gc":
+                data = readAndParse("gc",
+                        parserDate.getFilePath().getInputStream(),
+                        new GCTimeParser(parserDate.getTimeZone()));
+                break;
+            case "top":
+                data = readAndParse("top",
+                        parserDate.getFilePath().getInputStream(),
+                        new TopTimeParser(parserDate.getFilePath().getOriginalFilename(), parserDate.getTimeZone())
+                );
+                break;
         default:
             throw new IllegalArgumentException(
                     "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserDate.getParserConf());
         }
+            data.forEach((k, set) ->
+                    {
+                        switch (parserDate.getParserConf()) {
+                            case "sdng":
+                                SdngDataParser sdng = (SdngDataParser) set;
+                                ActionDoneParser dones = sdng.getActionsDone();
+                                dones.calculate();
+                                ErrorParser erros = sdng.getErrors();
+                                if (parserDate.getTraceResult())
+                                    logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));
 
-        List<AfterParseLogStat> logStats = new ArrayList<>();
+                                if (!dones.isNan())
+                                    influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);
+                                break;
 
-        data.forEach((k, set) ->
-        {
-            ActionDoneParser dones = set.getActionsDone();
-            dones.calculate();
-            ErrorParser erros = set.getErrors();
-            if(parserDate.getTraceResult()) { logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));}
+                            case "gc":
+                                GCParser gc = (GCParser) set;
+                                if (!gc.isNan()) {
+                                    influxDAO.storeGc(points, finalInfluxDb, k, gc);
+                                }
+                                break;
 
-            if (!dones.isNan())
-            {
-                influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);
-            }
+                            case "top":
+                                TopParser topSet = (TopParser) set;
+                                TopData cpuData = topSet.getCpuData();
+                                if (!cpuData.isNan())
+                                    influxDAO.storeTop(points, finalInfluxDb, k, cpuData);
+                                break;
+                }
 
-            GCParser gc = set.getGc();
-            if (!gc.isNan())
-            {
-                influxDAO.storeGc(points, finalInfluxDb, k, gc);
-            }
+            });
 
-            TopData cpuData = set.cpuData();
-            if (!cpuData.isNan())
-            {
-                influxDAO.storeTop(points, finalInfluxDb, k, cpuData);
-            }
-        });
         influxDAO.writeBatch(points);
-    return logStats;
+        return logStats;
     }
+
+    private static IDataParser parserFactory(String type){
+        switch (type){
+            case "sdng":
+                return new SdngDataParser();
+            case "gc":
+                return new GCParser();
+            case "top":
+                return new TopParser();
+            default:
+                throw new IllegalArgumentException(
+                        "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + type);
+        }
+    }
+
+
+    private static HashMap<Long, IDataParser> readAndParse(String parserConf, InputStream is, ITimeParser timeParser) throws IOException, ParseException {
+
+        HashMap<Long, IDataParser> data = new HashMap<>();
+        IDataParser currentSet = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
+        {
+            String line;
+            while ((line = br.readLine()) != null)
+            {
+                if (line.isEmpty()) continue;
+                long time = timeParser.parseTime(line);
+
+                if (time != 0)
+                {
+                    int min5 = 5 * 60 * 1000;
+                    long count = time / min5;
+                    long key = count * min5;
+
+                    currentSet = data.computeIfAbsent(key, k -> parserFactory(parserConf));
+                }
+                if (currentSet != null && timeParser.isParse())
+                {
+                    currentSet.parseLine(line);
+                }
+            }
+        }
+        return data;
+    }
+
+
 }
