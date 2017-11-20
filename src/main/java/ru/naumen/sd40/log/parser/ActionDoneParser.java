@@ -21,17 +21,17 @@ public class ActionDoneParser
         EXCLUDED_ACTIONS.add("EventAction".toLowerCase());
     }
 
-    ArrayList<Integer> times = new ArrayList<>();
-    double min;
-    double mean;
-    double stddev;
-    double percent50;
-    double percent95;
-    double percent99;
+    private ArrayList<Integer> times = new ArrayList<>();
+    private double min;
+    private double mean;
+    private double stddev;
+    private double percent50;
+    private double percent95;
+    private double percent99;
 
-    double percent999;
-    double max;
-    long count;
+    private double percent999;
+    private double max;
+    private long count;
     private int addObjectActions = 0;
     private int editObjectsActions = 0;
     private int getCatalogsActions = 0;
@@ -44,11 +44,11 @@ public class ActionDoneParser
 
     private int searchActions = 0;
 
-    boolean nan = true;
+    private boolean nan = true;
 
     private HashMap<String, Integer> actions = new HashMap<>();
 
-    Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
+    private final Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
 
     public void calculate()
     {

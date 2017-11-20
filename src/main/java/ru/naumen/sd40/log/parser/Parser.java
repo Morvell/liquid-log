@@ -4,6 +4,12 @@ import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.perfhouse.interfaces.IDataParser;
 import ru.naumen.perfhouse.interfaces.ITimeParser;
+import ru.naumen.sd40.log.parser.gc.GCParser;
+import ru.naumen.sd40.log.parser.gc.GCTimeParser;
+import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
+import ru.naumen.sd40.log.parser.sdng.SdngTimeParser;
+import ru.naumen.sd40.log.parser.top.TopParser;
+import ru.naumen.sd40.log.parser.top.TopTimeParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,11 +19,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
-/**
- * Created by doki on 22.10.16.
- */
+
 public class Parser
 {
     /**
@@ -41,7 +44,7 @@ public class Parser
             case "sdng":
                 data = readAndParse("sdng",
                         parserDate.getFilePath().getInputStream(),
-                        new SDNGTimeParser(parserDate.getTimeZone()));
+                        new SdngTimeParser(parserDate.getTimeZone()));
 
                 break;
             case "gc":

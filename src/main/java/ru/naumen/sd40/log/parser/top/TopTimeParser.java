@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.top;
 
 import ru.naumen.perfhouse.interfaces.ITimeParser;
 
@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 
 public class TopTimeParser implements ITimeParser {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm");
 
-    private Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
+    private final Pattern timeRegex = Pattern.compile("^_+ (\\S+)");
 
     private long currentTime = 0;
 
