@@ -36,15 +36,13 @@ public class SdngTimeParser implements ITimeParser
     public long parseTime(String line) throws ParseException
     {
         Matcher matcher = TIME_PATTERN.matcher(line);
-        long time = 0L;
         if (matcher.find())
         {
             String timeString = matcher.group(1);
             Date recDate = DATE_FORMAT.parse(timeString);
-            time = recDate.getTime();
-            parse = time != 0;
+            return recDate.getTime();
         }
-        return time;
+        return 0L;
     }
 
     @Override

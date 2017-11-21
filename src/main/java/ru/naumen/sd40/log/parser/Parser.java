@@ -45,7 +45,6 @@ public class Parser
                 data = readAndParse("sdng",
                         parserDate.getFilePath().getInputStream(),
                         new SdngTimeParser(parserDate.getTimeZone()));
-
                 break;
             case "gc":
                 data = readAndParse("gc",
@@ -62,37 +61,38 @@ public class Parser
             throw new IllegalArgumentException(
                     "Unknown parse mode! Availiable modes: sdng, gc, top. Requested mode: " + parserDate.getParserConf());
         }
-            data.forEach((k, set) ->
-                    {
-                        switch (parserDate.getParserConf()) {
-                            case "sdng":
-                                SdngDataParser sdng = (SdngDataParser) set;
-                                ActionDoneParser dones = sdng.getActionsDone();
-                                dones.calculate();
-                                ErrorParser erros = sdng.getErrors();
-                                if (parserDate.getTraceResult())
-                                    logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));
 
-                                if (!dones.isNan())
-                                    influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);
-                                break;
+        data.forEach((k, set) ->
+                {
+                    switch (parserDate.getParserConf()) {
+                        case "sdng":
+                            SdngDataParser sdng = (SdngDataParser) set;
+                            ActionDoneParser dones = sdng.getActionsDone();
+                            dones.calculate();
+                            ErrorParser erros = sdng.getErrors();
+                            if (parserDate.getTraceResult())
+                                logStats.add(new AfterParseLogStat(dones, k, erros.getErrorCount()));
 
-                            case "gc":
-                                GCParser gc = (GCParser) set;
-                                if (!gc.isNan()) {
-                                    influxDAO.storeGc(points, finalInfluxDb, k, gc);
-                                }
-                                break;
+                            if (!dones.isNan())
+                                influxDAO.storeActionsFromLog(points, finalInfluxDb, k, dones, erros);
+                            break;
 
-                            case "top":
-                                TopParser topSet = (TopParser) set;
-                                TopData cpuData = topSet.getCpuData();
-                                if (!cpuData.isNan())
-                                    influxDAO.storeTop(points, finalInfluxDb, k, cpuData);
-                                break;
-                }
+                        case "gc":
+                            GCParser gc = (GCParser) set;
+                            if (!gc.isNan()) {
+                                influxDAO.storeGc(points, finalInfluxDb, k, gc);
+                            }
+                            break;
 
-            });
+                        case "top":
+                            TopParser topSet = (TopParser) set;
+                            TopData cpuData = topSet.getCpuData();
+                            if (!cpuData.isNan())
+                                influxDAO.storeTop(points, finalInfluxDb, k, cpuData);
+                            break;
+            }
+
+        });
 
         influxDAO.writeBatch(points);
         return logStats;
@@ -125,18 +125,17 @@ public class Parser
                 if (line.isEmpty()) continue;
                 long time = timeParser.parseTime(line);
 
-                if (time != 0)
-                {
+                if (time == 0) {
+                    continue;
+                }
+
+
                     int min5 = 5 * 60 * 1000;
                     long count = time / min5;
                     long key = count * min5;
 
-                    currentSet = data.computeIfAbsent(key, k -> parserFactory(parserConf));
-                }
-                if (currentSet != null && timeParser.isParse())
-                {
-                    currentSet.parseLine(line);
-                }
+                    data.computeIfAbsent(key, k -> parserFactory(parserConf)).parseLine(line);
+
             }
         }
         return data;
