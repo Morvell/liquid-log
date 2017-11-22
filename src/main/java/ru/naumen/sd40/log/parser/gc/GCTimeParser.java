@@ -34,14 +34,12 @@ public class GCTimeParser implements ITimeParser {
     public long parseTime(String line) throws ParseException
     {
         Matcher matcher = PATTERN.matcher(line);
-        long time = 0L;
         if (matcher.find())
         {
             Date parserDate = DATE_FORMAT.parse(matcher.group(1));
-            time = parserDate.getTime();
-            parse = time != 0;
+            return parserDate.getTime();
         }
-        return time;
+        return 0L;
     }
 
     @Override

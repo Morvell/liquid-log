@@ -48,7 +48,7 @@ import ru.naumen.sd40.log.parser.TopData;
  * Created by doki on 24.10.16.
  */
 @Component
-public class InfluxDAO
+public class InfluxDAO implements IInfluxDAO
 {
     private String influxHost;
 

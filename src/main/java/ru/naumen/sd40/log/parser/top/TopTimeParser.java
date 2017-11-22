@@ -43,22 +43,13 @@ public class TopTimeParser implements ITimeParser {
 
     @Override
     public long parseTime(String line) throws ParseException {
-        long time = 0;
         Matcher matcher = timeRegex.matcher(line);
         if (matcher.find())
         {
-
-            time = sdf.parse(this.fileName + matcher.group(1)).getTime();
+            currentTime = sdf.parse(this.fileName + matcher.group(1)).getTime();
+            return currentTime;
         }
-
-        if (time == currentTime || (currentTime !=0 && time ==0)){
-            parse = true;
-        }
-        else parse = false;
-
-        currentTime = time;
-
-        return time;
+        return currentTime;
     }
 
     @Override

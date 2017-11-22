@@ -21,7 +21,7 @@ public class TopParser implements IDataParser
 
     private TopData cpuData = new TopData();
 
-    public void parseLine(String line) throws IOException, ParseException
+    public void parseLine(String line)
     {
         //get la
             Matcher la = Pattern.compile(".*load average:(.*)").matcher(line);
