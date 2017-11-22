@@ -5,9 +5,9 @@ import ru.naumen.sd40.log.parser.gc.GCParser;
 import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
 import ru.naumen.sd40.log.parser.top.TopParser;
 
-public class ParserFactory {
+class ParserFactory {
 
-    public static IDataParser getInstance(String type) {
+    static IDataParser getInstance(String type) {
 
         switch (type){
             case "sdng":

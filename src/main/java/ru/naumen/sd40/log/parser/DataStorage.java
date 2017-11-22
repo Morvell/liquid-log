@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
+import ru.naumen.perfhouse.influx.IInfluxDAO;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 import ru.naumen.perfhouse.interfaces.IDataParser;
 import ru.naumen.sd40.log.parser.gc.GCParser;
@@ -8,14 +9,15 @@ import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
 import ru.naumen.sd40.log.parser.top.TopParser;
 
 public class DataStorage {
-    private InfluxDAO influxDAO;
+    private IInfluxDAO influxDAO;
     private BatchPoints batchPoints;
     private String dbName;
     private long currentKey;
     private IDataParser dataSet;
+
     private String parserType;
 
-    public DataStorage(InfluxDAO influxDAO) {
+    public DataStorage(IInfluxDAO influxDAO) {
         this.influxDAO = influxDAO;
     }
 
@@ -35,7 +37,6 @@ public class DataStorage {
     public void init(String dbName, String parserType) {
         this.dbName = dbName.replaceAll("-", "_");
         this.parserType = parserType;
-        influxDAO.init();
         influxDAO.connectToDB(this.dbName);
         batchPoints = influxDAO.startBatchPoints(this.dbName);
     }
@@ -74,5 +75,9 @@ public class DataStorage {
         }
 
         influxDAO.writeBatch(batchPoints);
+    }
+
+    public void setParserType(String parserType) {
+        this.parserType = parserType;
     }
 }
