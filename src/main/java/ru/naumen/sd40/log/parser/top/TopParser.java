@@ -1,5 +1,6 @@
 package ru.naumen.sd40.log.parser.top;
 
+import org.springframework.stereotype.Component;
 import ru.naumen.perfhouse.interfaces.IDataParser;
 import ru.naumen.sd40.log.parser.IData;
 
@@ -13,13 +14,14 @@ import java.util.regex.Pattern;
  * @author dkolmogortsev
  *
  */
+
+@Component
 public class TopParser implements IDataParser
 {
 
     private final Pattern cpuAndMemPattren = Pattern
             .compile("^ *\\d+ \\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ \\S+ +(\\S+) +(\\S+) +\\S+ java");
 
-    private TopData cpuData = new TopData();
 
     public void parseLine(IData data, String line)
     {
@@ -43,8 +45,6 @@ public class TopParser implements IDataParser
 
     }
 
-    public TopData getCpuData() {
-        return cpuData;
-    }
+
 
 }
