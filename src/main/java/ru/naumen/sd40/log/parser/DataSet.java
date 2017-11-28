@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import ru.naumen.sd40.log.parser.gc.GCParser;
+import ru.naumen.sd40.log.parser.top.TopData;
 
 /**
  * Created by doki on 22.10.16.

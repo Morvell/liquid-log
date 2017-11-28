@@ -1,9 +1,9 @@
 package ru.naumen.sd40.log.parser.top;
 
 import ru.naumen.perfhouse.interfaces.IDataParser;
-import ru.naumen.sd40.log.parser.TopData;
+import ru.naumen.sd40.log.parser.IData;
 
-import java.io.*;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,13 +21,14 @@ public class TopParser implements IDataParser
 
     private TopData cpuData = new TopData();
 
-    public void parseLine(String line)
+    public void parseLine(IData data, String line)
     {
+        ITopData topData = (ITopData) data;
         //get la
             Matcher la = Pattern.compile(".*load average:(.*)").matcher(line);
             if (la.find())
             {
-                cpuData.addLa(Double.parseDouble(la.group(1).split(",")[0].trim()));
+                topData.addLa(Double.parseDouble(la.group(1).split(",")[0].trim()));
                 return;
             }
 
@@ -35,8 +36,8 @@ public class TopParser implements IDataParser
             Matcher cpuAndMemMatcher = cpuAndMemPattren.matcher(line);
             if (cpuAndMemMatcher.find())
             {
-                cpuData.addCpu(Double.valueOf(cpuAndMemMatcher.group(1)));
-                cpuData.addMem(Double.valueOf(cpuAndMemMatcher.group(2)));
+                topData.addCpu(Double.valueOf(cpuAndMemMatcher.group(1)));
+                topData.addMem(Double.valueOf(cpuAndMemMatcher.group(2)));
 
             }
 
@@ -45,4 +46,5 @@ public class TopParser implements IDataParser
     public TopData getCpuData() {
         return cpuData;
     }
+
 }

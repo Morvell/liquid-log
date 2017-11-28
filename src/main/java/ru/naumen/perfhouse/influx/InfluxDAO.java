@@ -42,7 +42,7 @@ import ru.naumen.perfhouse.statdata.Constants;
 import ru.naumen.sd40.log.parser.ActionDoneParser;
 import ru.naumen.sd40.log.parser.ErrorParser;
 import ru.naumen.sd40.log.parser.gc.GCParser;
-import ru.naumen.sd40.log.parser.TopData;
+import ru.naumen.sd40.log.parser.top.TopData;
 
 /**
  * Created by doki on 24.10.16.

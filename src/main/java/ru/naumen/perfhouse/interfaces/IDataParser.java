@@ -1,9 +1,11 @@
 package ru.naumen.perfhouse.interfaces;
 
+import ru.naumen.sd40.log.parser.IData;
+
 import java.io.IOException;
 import java.text.ParseException;
 
-public interface IDataParser {
+public interface IDataParser extends IData {
 
-    void parseLine(String line) throws IOException, ParseException;
+    void parseLine(IData data, String line);
 }
