@@ -3,7 +3,7 @@ package ru.naumen.sd40.log.parser.sdng;
 import ru.naumen.sd40.log.parser.ActionDoneParser;
 import ru.naumen.sd40.log.parser.ErrorParser;
 
-public class SdngData {
+public class SdngData implements ISdngData {
 
     private ActionDoneParser actionsDone;
     private ErrorParser errors;

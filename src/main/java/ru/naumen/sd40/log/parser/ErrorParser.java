@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Created by doki on 22.10.16.
  */
-public class ErrorParser implements IDataParser
+public class ErrorParser
 {
     private long warnCount;
     private long errorCount;

@@ -4,7 +4,10 @@ import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.IInfluxDAO;
 import ru.naumen.perfhouse.interfaces.IDataParser;
 import ru.naumen.sd40.log.parser.gc.GCParser;
+import ru.naumen.sd40.log.parser.gc.IGcData;
+import ru.naumen.sd40.log.parser.sdng.ISdngData;
 import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
+import ru.naumen.sd40.log.parser.top.ITopData;
 import ru.naumen.sd40.log.parser.top.TopData;
 import ru.naumen.sd40.log.parser.top.TopParser;
 
@@ -13,7 +16,7 @@ public class DataStorage {
     private BatchPoints batchPoints;
     private String dbName;
     private long currentKey;
-    private IDataParser dataSet;
+    private IData dataSet;
 
     private String parserType;
 
@@ -21,7 +24,7 @@ public class DataStorage {
         this.influxDAO = influxDAO;
     }
 
-    public IDataParser get(long key) {
+    public IData get(long key) {
         if (dataSet != null)
         {
             if (key == currentKey) {
@@ -30,7 +33,7 @@ public class DataStorage {
             store(dataSet);
         }
         currentKey = key;
-        dataSet = ParserFactory.getInstance(parserType);
+        dataSet = DataFactory.getInstance(parserType);
         return dataSet;
     }
 
@@ -46,11 +49,11 @@ public class DataStorage {
         store(dataSet);
     }
 
-    private void store(IDataParser dataSet) {
+    private void store(IData dataSet) {
 
         switch (parserType) {
             case "sdng":
-                SdngDataParser sdng = (SdngDataParser) dataSet;
+                ISdngData sdng = (ISdngData) dataSet;
                 ActionDoneParser dones = sdng.getActionsDone();
                 dones.calculate();
                 ErrorParser erros = sdng.getErrors();
@@ -60,17 +63,16 @@ public class DataStorage {
                 break;
 
             case "gc":
-                GCParser gc = (GCParser) dataSet;
+                IGcData gc = (IGcData) dataSet;
                 if (!gc.isNan()) {
                     influxDAO.storeGc(batchPoints, dbName, currentKey, gc);
                 }
                 break;
 
             case "top":
-                TopParser topSet = (TopParser) dataSet;
-                TopData cpuData = topSet.getCpuData();
-                if (!cpuData.isNan())
-                    influxDAO.storeTop(batchPoints, dbName, currentKey, cpuData);
+                ITopData topSet = (ITopData) dataSet;
+                if (!topSet.isNan())
+                    influxDAO.storeTop(batchPoints, dbName, currentKey, topSet);
                 break;
         }
 

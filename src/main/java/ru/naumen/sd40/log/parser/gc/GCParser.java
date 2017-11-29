@@ -21,10 +21,11 @@ public class GCParser implements IDataParser
     {
         Matcher matcher = gcExecutionTime.matcher(line);
 
-        IGcData ds = (IGcData) data;
+
 
         if (matcher.find())
         {
+            IGcData ds = (IGcData) data;
             ds.addValue(Double.parseDouble(matcher.group(1).trim().replace(',', '.')));
         }
     }

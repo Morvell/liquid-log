@@ -42,6 +42,8 @@ import ru.naumen.perfhouse.statdata.Constants;
 import ru.naumen.sd40.log.parser.ActionDoneParser;
 import ru.naumen.sd40.log.parser.ErrorParser;
 import ru.naumen.sd40.log.parser.gc.GCParser;
+import ru.naumen.sd40.log.parser.gc.IGcData;
+import ru.naumen.sd40.log.parser.top.ITopData;
 import ru.naumen.sd40.log.parser.top.TopData;
 
 /**
@@ -176,7 +178,7 @@ public class InfluxDAO implements IInfluxDAO
         }
     }
 
-    public void storeGc(BatchPoints batch, String dbName, long date, GCParser gc)
+    public void storeGc(BatchPoints batch, String dbName, long date, IGcData gc)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(GCTIMES, gc.getGcTimes()).addField(AVARAGE_GC_TIME, gc.getCalculatedAvg())
@@ -192,7 +194,7 @@ public class InfluxDAO implements IInfluxDAO
         }
     }
 
-    public void storeTop(BatchPoints batch, String dbName, long date, TopData data)
+    public void storeTop(BatchPoints batch, String dbName, long date, ITopData data)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(AVG_LA, data.getAvgLa()).addField(AVG_CPU, data.getAvgCpuUsage())

@@ -32,16 +32,19 @@ public class Parser
             case "sdng":
                 readAndParse(
                         parserDate.getFilePath().getInputStream(),
+                        ParserFactory.getInstance("sdng"),
                         new SdngTimeParser(parserDate.getTimeZone()));
                 break;
             case "gc":
                 readAndParse(
                         parserDate.getFilePath().getInputStream(),
+                        ParserFactory.getInstance("gc"),
                         new GCTimeParser(parserDate.getTimeZone()));
                 break;
             case "top":
                 readAndParse(
                         parserDate.getFilePath().getInputStream(),
+                        ParserFactory.getInstance("top"),
                         new TopTimeParser(parserDate.getFilePath().getOriginalFilename(), parserDate.getTimeZone())
                 );
                 break;
@@ -53,7 +56,7 @@ public class Parser
     }
 
 
-    private void readAndParse(InputStream is, ITimeParser timeParser) throws IOException, ParseException {
+    private void readAndParse(InputStream is, IDataParser parser, ITimeParser timeParser) throws IOException, ParseException {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
         {
@@ -70,8 +73,8 @@ public class Parser
                 long count = time / min5;
                 long key = count * min5;
 
-                IDataParser dataSet = dataStorage.get(key);
-                dataSet.parseLine(line);
+                IData dataSet = dataStorage.get(key);
+                parser.parseLine(dataSet, line);
             }
             dataStorage.save();
         }

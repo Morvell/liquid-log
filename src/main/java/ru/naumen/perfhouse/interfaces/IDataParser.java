@@ -7,5 +7,5 @@ import java.text.ParseException;
 
 public interface IDataParser extends IData {
 
-    void parseLine(IData data, String line);
+    void parseLine(IData data, String line) throws IOException, ParseException;
 }
