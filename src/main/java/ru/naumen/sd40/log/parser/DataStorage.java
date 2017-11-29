@@ -47,6 +47,7 @@ public class DataStorage {
     public void save()
     {
         store(dataSet);
+        influxDAO.writeBatch(batchPoints);
     }
 
     private void store(IData dataSet) {
@@ -76,7 +77,7 @@ public class DataStorage {
                 break;
         }
 
-        influxDAO.writeBatch(batchPoints);
+
     }
 
     public void setParserType(String parserType) {
