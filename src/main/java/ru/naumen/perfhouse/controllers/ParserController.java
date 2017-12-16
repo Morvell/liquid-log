@@ -22,6 +22,8 @@ import java.util.List;
 public class ParserController {
 
     private InfluxDAO influxDAO;
+    @Inject
+    private Parser parser;
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
@@ -43,7 +45,7 @@ public class ParserController {
 
     @RequestMapping(value = "/result", method = RequestMethod.POST)
     public ModelAndView parserResult(@ModelAttribute("parserDate") ParserDate parserDate) throws IOException, ParseException {
-        new Parser().parse(influxDAO, parserDate);
+        parser.parse(influxDAO, parserDate);
 
             return new ModelAndView("result_parser_without_log");
 
