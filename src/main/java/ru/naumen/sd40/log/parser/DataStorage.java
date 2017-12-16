@@ -2,14 +2,11 @@ package ru.naumen.sd40.log.parser;
 
 import org.influxdb.dto.BatchPoints;
 import ru.naumen.perfhouse.influx.IInfluxDAO;
-import ru.naumen.perfhouse.interfaces.IDataParser;
-import ru.naumen.sd40.log.parser.gc.GCParser;
 import ru.naumen.sd40.log.parser.gc.IGcData;
+import ru.naumen.sd40.log.parser.sdng.ActionDoneData;
+import ru.naumen.sd40.log.parser.sdng.ErrorData;
 import ru.naumen.sd40.log.parser.sdng.ISdngData;
-import ru.naumen.sd40.log.parser.sdng.SdngDataParser;
 import ru.naumen.sd40.log.parser.top.ITopData;
-import ru.naumen.sd40.log.parser.top.TopData;
-import ru.naumen.sd40.log.parser.top.TopParser;
 
 public class DataStorage {
     private IInfluxDAO influxDAO;
@@ -55,9 +52,9 @@ public class DataStorage {
         switch (parserType) {
             case "sdng":
                 ISdngData sdng = (ISdngData) dataSet;
-                ActionDoneParser dones = sdng.getActionsDone();
+                ActionDoneData dones = sdng.getActionsDone();
                 dones.calculate();
-                ErrorParser erros = sdng.getErrors();
+                ErrorData erros = sdng.getErrors();
 
                 if (!dones.isNan())
                     influxDAO.storeActionsFromLog(batchPoints, dbName, currentKey, dones, erros);

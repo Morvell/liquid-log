@@ -8,15 +8,15 @@
 // */
 //public class DataSet
 //{
-//    private ActionDoneParser actionsDone;
-//    private ErrorParser errors;
+//    private ActionDoneData actionsDone;
+//    private ErrorData errors;
 //    private GCParser gc;
 //    private TopData cpuData;
 //
 //    public DataSet()
 //    {
-//        actionsDone = new ActionDoneParser();
-//        errors = new ErrorParser();
+//        actionsDone = new ActionDoneData();
+//        errors = new ErrorData();
 //        gc = new GCParser();
 //        cpuData = new TopData();
 //    }
@@ -32,12 +32,12 @@
 //        gc.parseLine(line);
 //    }
 //
-//    public ActionDoneParser getActionsDone()
+//    public ActionDoneData getActionsDone()
 //    {
 //        return actionsDone;
 //    }
 //
-//    public ErrorParser getErrors()
+//    public ErrorData getErrors()
 //    {
 //        return errors;
 //    }

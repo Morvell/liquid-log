@@ -1,24 +1,21 @@
 package ru.naumen.sd40.log.parser.sdng;
 
-import ru.naumen.sd40.log.parser.ActionDoneParser;
-import ru.naumen.sd40.log.parser.ErrorParser;
-
 public class SdngData implements ISdngData {
 
-    private ActionDoneParser actionsDone;
-    private ErrorParser errors;
+    private ActionDoneData actionsDone;
+    private ErrorData errors;
 
 
     public SdngData() {
-        actionsDone = new ActionDoneParser();
-        errors = new ErrorParser();
+        actionsDone = new ActionDoneData();
+        errors = new ErrorData();
     }
 
-    public ActionDoneParser getActionsDone() {
+    public ActionDoneData getActionsDone() {
         return actionsDone;
     }
 
-    public ErrorParser getErrors() {
+    public ErrorData getErrors() {
         return errors;
     }
 }

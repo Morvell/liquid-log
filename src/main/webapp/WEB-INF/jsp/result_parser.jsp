@@ -1,8 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="ru.naumen.sd40.log.parser.ActionDoneParser" %>
+<%@ page import="ru.naumen.sd40.log.parser.sdng.ActionDoneData" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.HashMap" %>
-<%@ page import="ru.naumen.sd40.log.parser.ErrorParser" %><%--
+<%@ page import="ru.naumen.sd40.log.parser.sdng.ErrorData" %><%--
   Created by IntelliJ IDEA.
   User: User
   Date: 25.10.2017
