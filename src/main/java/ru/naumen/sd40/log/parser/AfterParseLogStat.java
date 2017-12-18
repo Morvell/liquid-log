@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
+import ru.naumen.sd40.log.parser.sdng.ActionDoneData;
+
 public class AfterParseLogStat {
     private long timestemp;
     private long error;
@@ -13,7 +15,7 @@ public class AfterParseLogStat {
     private double max;
     private long count;
 
-    public AfterParseLogStat(ActionDoneParser done, long timestemp, long error){
+    public AfterParseLogStat(ActionDoneData done, long timestemp, long error){
         setError(error);
         setTimestemp(timestemp);
         setMin(done.getMin());

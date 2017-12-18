@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.sdng;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,18 +8,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import ru.naumen.sd40.log.parser.IData;
 
 /**
  * Created by doki on 22.10.16.
  */
-public class ActionDoneParser
+public class ActionDoneData implements IData
 {
-    private static Set<String> EXCLUDED_ACTIONS = new HashSet<>();
-
-    static
-    {
-        EXCLUDED_ACTIONS.add("EventAction".toLowerCase());
-    }
 
     private ArrayList<Integer> times = new ArrayList<>();
     private double min;
@@ -48,7 +43,38 @@ public class ActionDoneParser
 
     private HashMap<String, Integer> actions = new HashMap<>();
 
-    private final Pattern doneRegEx = Pattern.compile("Done\\((\\d+)\\): ?(.*?Action)");
+
+    public void incAddObjectActions() {
+        this.addObjectActions++;
+    }
+
+    public void incEditObjectsActions() {
+        this.editObjectsActions++;
+    }
+
+    public void incGetCatalogsActions() {
+        this.getCatalogsActions++;
+    }
+
+    public void incGetListActions() {
+        this.getListActions++;
+    }
+
+    public void incCommentActions() {
+        this.commentActions++;
+    }
+
+    public void incGetFormActions() {
+        this.getFormActions++;
+    }
+
+    public void incGetDtObjectActions() {
+        this.getDtObjectActions++;
+    }
+
+    public void incSearchActions() {
+        this.searchActions++;
+    }
 
     public void calculate()
     {
@@ -91,11 +117,6 @@ public class ActionDoneParser
     public long getCount()
     {
         return count;
-    }
-
-    public Pattern getDoneRegEx()
-    {
-        return doneRegEx;
     }
 
     public int getDtObjectActions()
@@ -168,53 +189,8 @@ public class ActionDoneParser
         return nan;
     }
 
-    public void parseLine(String line)
-    {
-        Matcher matcher = doneRegEx.matcher(line);
-
-        if (matcher.find())
-        {
-            String actionInLowerCase = matcher.group(2).toLowerCase();
-            if (EXCLUDED_ACTIONS.contains(actionInLowerCase))
-            {
-                return;
-            }
-
-            times.add(Integer.parseInt(matcher.group(1)));
-            if (actionInLowerCase.equals("addobjectaction"))
-            {
-                addObjectActions++;
-            }
-            else if (actionInLowerCase.equals("getcatalogsaction")){
-                getCatalogsActions++;
-            }
-            else if (actionInLowerCase.equals("editobjectaction"))
-            {
-                editObjectsActions++;
-            }
-            else if (actionInLowerCase.matches("(?i)[a-zA-Z]+comment[a-zA-Z]+"))
-            {
-                commentActions++;
-            }
-            else if (!actionInLowerCase.contains("advlist")
-                    && actionInLowerCase.matches("(?i)^([a-zA-Z]+|Get)[a-zA-Z]+List[a-zA-Z]+"))
-
-            {
-                getListActions++;
-            }
-            else if (actionInLowerCase.matches("(?i)^([a-zA-Z]+|Get)[a-zA-Z]+Form[a-zA-Z]+"))
-            {
-                getFormActions++;
-            }
-            else if (actionInLowerCase.matches("(?i)^([a-zA-Z]+|Get)[a-zA-Z]+DtObject[a-zA-Z]+"))
-            {
-                getDtObjectActions++;
-            }
-            else if (actionInLowerCase.matches("(?i)[a-zA-Z]+search[a-zA-Z]+"))
-            {
-                searchActions++;
-            }
-
-        }
+    public void setTimes(int times) {
+        this.times.add(times);
     }
+
 }
